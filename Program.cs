@@ -1,4 +1,4 @@
-﻿using Space.Functions;
+﻿using Space.DataAccess;
 
 namespace SpaceSolution
 {
@@ -6,42 +6,25 @@ namespace SpaceSolution
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, dear user!\n" +
-                                "In order to do our job, you have to give us some information. So in which language do you prefer to communicate?\n" +
-                                "English/German (you can answer with the first letter only)");
-
-            Dictionary<string, string> languageOptions = new() { { "e", "e" }, { "english", "e" }, { "g", "g" }, { "german", "g" } };
-            string language;
+            Console.WriteLine("Hello, dear user!");
 
             while (true)
             {
-                language = Console.ReadLine().ToLower();
-                if (string.IsNullOrEmpty(language) || !languageOptions.ContainsKey(language))
-                {
-                    Console.WriteLine("Sorry, but this is invalid input. You can write just an 'e' for english and 'g' for german.");
-                }
-                else
-                    break;
-            }
-
-            if (language == "e")
-            {
                 Console.WriteLine("Please, enter the path to or the name of the folder where you are storing the CSV files!");
+                string folderPath = Console.ReadLine();
 
-                while (true)
+                if (!string.IsNullOrEmpty(folderPath) && Directory.Exists(folderPath))
                 {
-                    string folderPath = Console.ReadLine();
-
-                    if (!string.IsNullOrEmpty(folderPath) || Directory.GetFiles(folderPath, "*.csv").Length > 0)
+                    if (Directory.GetFiles(folderPath, "*.csv").Length > 0)
                         FileReader.ReadingCSVFile(folderPath);
                     else
-                        Console.WriteLine("Sorry, but it looks like there is no csv files in this folder");
+                        Console.WriteLine("Sorry, but it looks like there is no csv files in this folder.");
+
                 }
+                else
+                    Console.WriteLine("Sorry, this folder does not exist! PLease, try with another one.");
             }
-            else
-            {
-                Console.WriteLine("We can't speak German right now :)");
-            }
+
         }
     }
 }
