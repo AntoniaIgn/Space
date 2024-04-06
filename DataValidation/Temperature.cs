@@ -9,6 +9,14 @@
             foreach (string date in optionalDates.Keys)
             {
                 bool isNum = int.TryParse(date, out int i);
+
+                if (string.IsNullOrEmpty(temperature[i - 1]))
+                {
+                    Console.WriteLine($"Temperature data is missing for {i} July!");
+                    badConditions.Add(i - 1);
+                    continue;
+                }
+
                 int.TryParse(temperature[i - 1], out int temp);
 
                 if (isNum is true && (temp < 0 || temp > 33))

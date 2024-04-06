@@ -1,4 +1,5 @@
 ﻿using Space.DataAccess;
+using Space.DataValidation;
 
 namespace SpaceSolution
 {
@@ -16,7 +17,14 @@ namespace SpaceSolution
                 if (!string.IsNullOrEmpty(folderPath) && Directory.Exists(folderPath))
                 {
                     if (Directory.GetFiles(folderPath, "*.csv").Length > 0)
-                        FileReader.ReadingCSVFile(folderPath);
+                    {
+                        var data = FileReader.ReadingCSVFile(folderPath);
+                        var spaceports = data.Keys.ToList();
+                        var bestCombination = BestCombination.FindBestCombination(data);
+
+                        FileWriter.WritingSCVFile(spaceports, folderPath);
+                        break;
+                    }
                     else
                         Console.WriteLine("Sorry, but it looks like there is no csv files in this folder.");
 
@@ -25,6 +33,12 @@ namespace SpaceSolution
                     Console.WriteLine("Sorry, this folder does not exist! PLease, try with another one.");
             }
 
+            Console.WriteLine("\nPlease, enter your e-mail first and then password. We need them in order to send the analysis file.");
+            string senderEmail = Console.ReadLine();
+            string senderPassword = Console.ReadLine();
+
+            Console.WriteLine("\nTo who you want to send the file? Please, enter the receiver email.");
+            string receiver = Console.ReadLine();
         }
     }
 }

@@ -2,9 +2,9 @@
 {
     internal class BestDate
     {
-        public static string FindBestDate(Dictionary<string, List<int>> optionalDates)
+        public static string[] FindBestDate(Dictionary<string, List<int>> optionalDates)
         {
-            double score, bestScore = int.MaxValue;
+            double score, bestScore = double.MaxValue;
             int bestDate = 0;
 
             foreach (var date in optionalDates.Keys)
@@ -18,7 +18,7 @@
                 }
             }
 
-            return bestDate.ToString();
+            return [bestDate.ToString() + " July", bestScore.ToString()];
         }
     }
 }

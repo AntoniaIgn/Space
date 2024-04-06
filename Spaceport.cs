@@ -1,15 +1,31 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Space;
+﻿namespace Space;
 
 public class Spaceport
 {
-    [Required]
     public string Location { get; set; }
 
-    /*private float latitude;
-    [Required]
-    public float Latitude { get => latitude; set => latitude = (float)value; }*/     //not neccesery a higher precision
+    public float Latitude { get; set; }     //not neccesery a higher precision
 
     public string? LaunchBestDate { get; set; }
+
+    public Spaceport(string location, string? launchBestDate)
+    {
+        Location = location;
+        SetLatitude();
+        LaunchBestDate = launchBestDate;
+    }
+
+    public void SetLatitude()
+    {
+        Latitude = Location.ToLower() switch
+        {
+            "kourou,french guiana" => 5.1574f,
+            "cape canaveral,usa" => 28.3922f,
+            "kodiak,usa" => 57.7900f,
+            "tanegashima,japan" => 30.6096f,
+            "mahia,new zealand" => 39.0806f,
+            _ => float.MaxValue,
+        };
+    }
 }
+
