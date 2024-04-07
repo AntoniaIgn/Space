@@ -20,7 +20,7 @@ public class Humidity
             {
                 if (string.IsNullOrEmpty(humidity[i - 1]))
                 {
-                    Console.WriteLine(string.Format($"\n{LangHelper.GetString("MissingHumidityData")}", i));
+                    Console.WriteLine(string.Format($"{LangHelper.GetString("MissingHumidityData")}", i));
                     badConditions.Add(date);
                     continue;
                 }
