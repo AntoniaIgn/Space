@@ -1,44 +1,36 @@
-﻿using Space.DataAccess;
-using Space.DataValidation;
+﻿using Space.DataFilters;
+using Space.Email;
+using Space.FileIO;
+using Space.Language;
+using Space.Models;
 
-namespace SpaceSolution
+namespace SpaceSolution;
+
+internal class Program
 {
-    internal class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello, dear user!");
+        Console.WriteLine($"{LangHelper.GetString("Hello")}");
 
-            while (true)
-            {
-                Console.WriteLine("Please, enter the path to or the name of the folder where you are storing the CSV files!");
-                string folderPath = Console.ReadLine();
+        Console.WriteLine("To change language to German enter 'de'. To continue in English press Enter.");
+        string? language = Console.ReadLine();
 
-                if (!string.IsNullOrEmpty(folderPath) && Directory.Exists(folderPath))
-                {
-                    if (Directory.GetFiles(folderPath, "*.csv").Length > 0)
-                    {
-                        var data = FileReader.ReadingCSVFile(folderPath);
-                        var spaceports = data.Keys.ToList();
-                        var bestCombination = BestCombination.FindBestCombination(data);
+        if (language is "de")
+            LangHelper.ChangeLanguage(language);
 
-                        FileWriter.WritingSCVFile(spaceports, folderPath);
-                        break;
-                    }
-                    else
-                        Console.WriteLine("Sorry, but it looks like there is no csv files in this folder.");
+        SpaceportsResponse response = FileReader.ReadFileData();
 
-                }
-                else
-                    Console.WriteLine("Sorry, this folder does not exist! PLease, try with another one.");
-            }
+        List<Spaceport> spaceports = response.SpaceportsData.Keys.ToList();
 
-            Console.WriteLine("\nPlease, enter your e-mail first and then password. We need them in order to send the analysis file.");
-            string senderEmail = Console.ReadLine();
-            string senderPassword = Console.ReadLine();
+        string filePath = FileWriter.WriteSCVFile(spaceports, response.FolderPath);
 
-            Console.WriteLine("\nTo who you want to send the file? Please, enter the receiver email.");
-            string receiver = Console.ReadLine();
-        }
+        if (string.IsNullOrEmpty(filePath))
+            return;
+
+        Spaceport spaceport = LocationSelector.GetBestLocationSpaceport(response.SpaceportsData);
+
+        EmailSender.SendEmail(spaceport, filePath);
+
+        Console.WriteLine($"\n{LangHelper.GetString("Thanks")}");
     }
 }
